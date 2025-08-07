@@ -80,7 +80,6 @@ export const run = async (
     const reportsCoverage = getOverallCoverage(report, counterType)
     overallCoverage.missed += reportsCoverage?.missed ?? 0
     overallCoverage.covered += reportsCoverage?.covered ?? 0
-    overallCoverage.percentage += reportsCoverage?.percentage ?? 0
 
     const reportsFilesCovered = getFileCoverage(
       report,
@@ -93,7 +92,17 @@ export const run = async (
     )
   }
 
-  overallCoverage.percentage = overallCoverage.percentage / totalReports
+  if (overallCoverage.covered + overallCoverage.missed > 0) {
+    overallCoverage.percentage = parseFloat(
+      (
+        (overallCoverage.covered /
+          (overallCoverage.covered + overallCoverage.missed)) *
+        100
+      ).toFixed(2)
+    )
+  } else {
+    overallCoverage.percentage = 0
+  }
   overallFilesCoverage.percentage =
     overallFilesCoverage.percentage / totalReports
 
